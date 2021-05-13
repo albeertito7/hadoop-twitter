@@ -8,6 +8,9 @@ public class TrendingTopics extends Configured implements Tool {
 
     @Override
     public int run(String[] strings) throws Exception {
+        // regular expression to access the hashtag
+        // "(?:\\s|\\A|^)[##]+([A-Za-z0-9-_]+)"
+
         return 0;
     }
 
