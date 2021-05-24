@@ -1,0 +1,70 @@
+package cleanUp;
+
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
+import org.apache.hadoop.mapreduce.lib.chain.ChainReducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.util.GenericOptionsParser;
+import trendingTopics.TrendingTopicsMapper;
+import trendingTopics.TrendingTopicsReducer;
+
+import java.net.URI;
+
+public class CleanUp extends Configured implements Tool {
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        Configuration conf = getConf();
+
+        args = new GenericOptionsParser(conf, args).getRemainingArgs();
+
+        Path outputPath = new Path(args[1]);
+        FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
+
+        fs.delete(outputPath, true);
+
+        Job job = Job.getInstance(conf, "Clean Up");
+
+        job.setJarByClass(trendingTopics.TrendingTopics.class);
+
+        // Considering the input and output as text file set the input & output
+        // format to TextInputFormat
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        ChainMapper.addMapper(job, CleanUpMapper.class,
+                Object.class, Text.class, Text.class, Text.class,
+                new Configuration(false));
+
+        ChainMapper.addMapper(job, TrendingTopicsMapper.class,
+                Text.class, Text.class, Text.class, IntWritable.class,
+                new Configuration(false));
+
+        ChainReducer.setReducer(job, TrendingTopicsReducer.class,
+                Text.class, IntWritable.class, Text.class, IntWritable.class,
+                conf);
+
+        return (job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    public static void main(String[] args) throws Exception {
+        int exitCode = ToolRunner.run(new CleanUp(), args);
+        System.exit(exitCode);
+    }
+}
