@@ -35,7 +35,7 @@ public class CleanUp extends Configured implements Tool {
 
         Job job = Job.getInstance(conf, "Clean Up");
 
-        //job.setJarByClass(trendingTopics.TrendingTopics.class);
+        job.setJarByClass(trendingTopics.TrendingTopics.class);
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
