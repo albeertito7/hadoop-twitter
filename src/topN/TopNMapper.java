@@ -27,8 +27,10 @@ public class TopNMapper extends Mapper<Object, Text, Text, IntWritable> {
     @Override
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
-        String[] tokens = value.toString().split("\t");
-        tMap.put(tokens[1], Integer.parseInt(tokens[0]));
+        /*String[] tokens = value.toString().split("\t");
+        tMap.put(tokens[1], Integer.parseInt(tokens[0]));*/
+
+        tMap.put(value.toString(), Integer.parseInt(key.toString())); // <hashtag, count>
 
         if (tMap.size() > N_2) {
             tMap.remove(tMap.firstKey());
