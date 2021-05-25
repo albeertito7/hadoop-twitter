@@ -37,7 +37,7 @@ public class TrendingTopics extends Configured implements Tool {
         job.setReducerClass(TrendingTopicsReducer.class);
         //job.setCombinerClass(TrendingTopicsReducer.class);
 
-        /* As the mapper and reducer types differ... */
+        /* As the mapper and reducer out types differ... */
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(IntWritable.class);
