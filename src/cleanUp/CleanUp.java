@@ -37,14 +37,18 @@ public class CleanUp extends Configured implements Tool {
 
         //job.setJarByClass(trendingTopics.TrendingTopics.class);
 
-        // Considering the input and output as text file set the input & output
-        // format to TextInputFormat
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
+        cleanUp(job);
+
+        return (job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    public static void cleanUp(Job job) throws java.io.IOException {
         ChainMapper.addMapper(job, LanguageMapper.class,
                 LongWritable.class, Text.class, LongWritable.class, Text.class,
                 new Configuration(false));
@@ -60,8 +64,6 @@ public class CleanUp extends Configured implements Tool {
         ChainMapper.addMapper(job, LowerCaseMapper.class,
                 LongWritable.class, Text.class, Text.class, Text.class,
                 new Configuration(false));
-
-        return (job.waitForCompletion(true) ? 0 : 1);
     }
 
     public static void main(String[] args) throws Exception {
