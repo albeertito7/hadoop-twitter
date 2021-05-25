@@ -24,7 +24,9 @@ public class TrendingTopicsReducer extends Reducer<Text, IntWritable, IntWritabl
     {
         int count = 0;
         for (IntWritable val : values)
+        {
             count += val.get();
+        }
 
         tMapRed.put(count, hashTag.toString());
     }
