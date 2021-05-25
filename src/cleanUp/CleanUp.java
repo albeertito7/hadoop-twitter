@@ -1,24 +1,21 @@
 package cleanUp;
 
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
-import org.apache.hadoop.mapreduce.lib.chain.ChainReducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import trendingTopics.TrendingTopicsMapper;
-import trendingTopics.TrendingTopicsReducer;
 
 import java.net.URI;
 
@@ -38,7 +35,7 @@ public class CleanUp extends Configured implements Tool {
 
         Job job = Job.getInstance(conf, "Clean Up");
 
-        job.setJarByClass(trendingTopics.TrendingTopics.class);
+        //job.setJarByClass(trendingTopics.TrendingTopics.class);
 
         // Considering the input and output as text file set the input & output
         // format to TextInputFormat
@@ -48,17 +45,21 @@ public class CleanUp extends Configured implements Tool {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        ChainMapper.addMapper(job, CleanUpMapper.class,
-                Object.class, Text.class, Text.class, Text.class,
+        ChainMapper.addMapper(job, LanguageMapper.class,
+                LongWritable.class, Text.class, LongWritable.class, Text.class,
                 new Configuration(false));
 
-        ChainMapper.addMapper(job, TrendingTopicsMapper.class,
-                Text.class, Text.class, Text.class, IntWritable.class,
+        ChainMapper.addMapper(job, EmptyFieldsMapper.class,
+                LongWritable.class, Text.class, LongWritable.class, Text.class,
                 new Configuration(false));
 
-        ChainReducer.setReducer(job, TrendingTopicsReducer.class,
-                Text.class, IntWritable.class, Text.class, IntWritable.class,
-                conf);
+        ChainMapper.addMapper(job, CustomFieldsMapper.class,
+                LongWritable.class, Text.class, LongWritable.class, Text.class,
+                new Configuration(false));
+
+        ChainMapper.addMapper(job, LowerCaseMapper.class,
+                LongWritable.class, Text.class, Text.class, Text.class,
+                new Configuration(false));
 
         return (job.waitForCompletion(true) ? 0 : 1);
     }
