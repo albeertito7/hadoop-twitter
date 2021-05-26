@@ -1,15 +1,12 @@
 package cleanUp;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Locale;
 
 public class LowerCaseMapper extends Mapper<LongWritable, Text, Text, Text> {
 
@@ -19,9 +16,12 @@ public class LowerCaseMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         try {
             JSONObject json = new JSONObject(value.toString());
-            json.put("text", json.getString("text").toLowerCase());
 
-            context.write(new Text(key.toString()), new Text(value.toString()));
+            if (json.has("text")) {
+                json.put("text", json.getString("text").toLowerCase());
+            }
+
+            context.write(new Text(key.toString()), new Text(json.toString()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
