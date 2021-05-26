@@ -1,5 +1,6 @@
 package cleanUp;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -19,9 +20,9 @@ public class CustomFieldsMapper extends Mapper<LongWritable, Text, LongWritable,
             JSONObject json = new JSONObject(value.toString()),
                     jsonObject = new JSONObject();
 
-            jsonObject.put("hashtags", json.getJSONObject("entities").get("hashtags").toString());
-            jsonObject.put("text", json.get("text").toString());
-            jsonObject.put("lang", json.get("lang").toString());
+            jsonObject.put("hashtags", json.getJSONObject("entities").getJSONArray("hashtags"));
+            jsonObject.put("text", json.getString("text"));
+            jsonObject.put("lang", json.getString("lang"));
 
             context.write(key, new Text(jsonObject.toString()));
         }
