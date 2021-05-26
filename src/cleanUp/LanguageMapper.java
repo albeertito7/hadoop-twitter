@@ -1,5 +1,6 @@
 package cleanUp;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -13,7 +14,14 @@ import java.io.IOException;
 
 public class LanguageMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 
-    static final String language = "es";
+    private static String language;
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+
+        Configuration conf = context.getConfiguration();
+        language = conf.getStrings("language")[0];
+    }
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
