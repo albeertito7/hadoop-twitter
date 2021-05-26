@@ -23,14 +23,18 @@ import java.net.URI;
 
 public class CleanUpDriver extends Configured implements Tool {
 
+    private static final String language = "es";
+
     @Override
     public int run(String[] args) throws Exception {
 
         Configuration conf = getConf();
+        conf.setStrings("lang", language);
 
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        Path outputPath = new Path(args[1]);
+        Path inputPath = new Path(args[0]),
+                outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
 
         fs.delete(outputPath, true);
@@ -42,8 +46,8 @@ public class CleanUpDriver extends Configured implements Tool {
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        FileInputFormat.addInputPath(job, inputPath);
+        FileOutputFormat.setOutputPath(job, outputPath);
 
         cleanUp(job);
 
