@@ -1,6 +1,5 @@
 package cleanUp;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -16,9 +15,8 @@ public class EmptyFieldsMapper extends Mapper<LongWritable, Text, Object, Text> 
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
         try {
-            JSONObject json = new JSONObject(value.toString());
-
-            if (json.getJSONObject("entities").getJSONArray("hashtags").length() == 0 || json.getString("text").isEmpty())    {
+            JSONObject json = new JSONObject(value.toString()), entities;
+            if(!json.has("text") || (entities = json.getJSONObject("entities")) == null || entities.getJSONArray("hashtags").length() == 0) {
                 return;
             }
 
