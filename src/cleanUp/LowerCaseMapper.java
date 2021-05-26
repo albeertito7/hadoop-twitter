@@ -17,7 +17,7 @@ public class LowerCaseMapper extends Mapper<LongWritable, Text, Text, Text> {
         try {
             JSONObject json = new JSONObject(value.toString());
 
-            if (json.has("text")) {
+            if (json.has("text")) { // maybe this it's not necessary cuz of EmptyFieldsMapper
                 json.put("text", json.getString("text").toLowerCase());
             }
 
