@@ -29,20 +29,16 @@ public class CleanUpDriver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
 
         Configuration conf = getConf();
-        conf.setStrings("lang", language);
+        conf.setStrings("lang", new String[]{language});
 
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        Path inputPath = new Path(args[0]),
-                outputPath = new Path(args[1]);
+        Path inputPath = new Path(args[0]), outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
-
         fs.delete(outputPath, true);
 
         Job job = Job.getInstance(conf, "Clean Up");
-
         job.setJarByClass(TrendingTopicsDriver.class);
-
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
