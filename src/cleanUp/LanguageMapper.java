@@ -20,7 +20,7 @@ public class LanguageMapper extends Mapper<LongWritable, Text, LongWritable, Tex
     protected void setup(Context context) throws IOException, InterruptedException {
 
         Configuration conf = context.getConfiguration();
-        language = conf.getStrings("language")[0];
+        language = conf.getStrings("lang")[0];
     }
 
     @Override
