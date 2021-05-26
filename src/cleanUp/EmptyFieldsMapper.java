@@ -18,7 +18,7 @@ public class EmptyFieldsMapper extends Mapper<LongWritable, Text, Object, Text> 
         try {
             JSONObject json = new JSONObject(value.toString());
 
-            if (json.getJSONObject("entities").getString("hashtags").equals("[]") || json.getString("text").isEmpty())    {
+            if (json.getJSONObject("entities").getJSONArray("hashtags").length() == 0 || json.getString("text").isEmpty())    {
                 return;
             }
 
