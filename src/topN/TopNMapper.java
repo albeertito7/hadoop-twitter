@@ -3,6 +3,7 @@ package topN;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -10,10 +11,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TopNMapper extends Mapper<Object, Text, Text, IntWritable> {
+public class TopNMapper extends Mapper<LongWritable, Text, IntWritable, Text> { // NullWritable
 
     private TreeMap<String, Integer> tMap; // to sort the top N hashtags
-    private int N_2;
+    private static int N_2;
 
     @Override
     public void setup(Context context) throws IOException, InterruptedException {
@@ -25,12 +26,12 @@ public class TopNMapper extends Mapper<Object, Text, Text, IntWritable> {
     // To get a better approximation to the Top-N hastags, it is recommendable that the mapper
     // calculates the Top-2N hashtags and the reducer the Top-N.
     @Override
-    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-        /*String[] tokens = value.toString().split("\t");
-        tMap.put(tokens[1], Integer.parseInt(tokens[0]));*/
+        String[] tokens = value.toString().split("\t");
 
-        tMap.put(value.toString(), Integer.parseInt(key.toString())); // <hashtag, count>
+
+        tMap.put(tokens[1], Integer.parseInt(tokens[0])); // <hashtag, count>
 
         if (tMap.size() > N_2) {
             tMap.remove(tMap.firstKey());
@@ -43,7 +44,7 @@ public class TopNMapper extends Mapper<Object, Text, Text, IntWritable> {
         for (Map.Entry<String, Integer> entry : tMap.entrySet())
         {
             int count = entry.getValue();
-            context.write(new Text(entry.getKey()), new IntWritable(count));
+            context.write(new IntWritable(count), new Text(entry.getKey()));
         }
     }
 }
