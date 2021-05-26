@@ -24,7 +24,8 @@ public class TrendingTopicsDriver extends Configured implements Tool {
         Configuration conf = new Configuration();
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        Path outputPath = new Path(args[1]);
+        Path inputPath = new Path(args[0]),
+                outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
         fs.delete(outputPath, true); // delete output directory if already exists
 
@@ -40,8 +41,8 @@ public class TrendingTopicsDriver extends Configured implements Tool {
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.addInputPath(job, new Path(args[0])); // The input can be can be a file, directory or a file pattern
-        FileOutputFormat.setOutputPath(job, new Path(args[1])); // The output directory must not exist
+        FileInputFormat.addInputPath(job, inputPath); // The input can be can be a file, directory or a file pattern
+        FileOutputFormat.setOutputPath(job, outputPath); // The output directory must not exist
 
         return (job.waitForCompletion(true) ? 0 : 1); // Submit mapreduce job and wait for completion
     }
