@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TopNReducer extends Reducer<Text, IntWritable, IntWritable, Text> {
+public class TopNReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
 
     private TreeMap<Integer, String> tMap;
-    private int N;
+    private static int N;
 
     @Override
     public void setup (Context context) throws IOException, InterruptedException {
@@ -22,17 +22,15 @@ public class TopNReducer extends Reducer<Text, IntWritable, IntWritable, Text> {
     }
 
     @Override
-    public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+    public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
         String name = key.toString();
         int count = 0;
 
-        for (IntWritable val : values)
+        for (Text val : values)
         {
-            count = val.get();
+            tMap.put(Integer.parseInt(key.toString()), val.toString());
         }
-
-        tMap.put(count, name);
 
         if (tMap.size() > N) {
             tMap.remove(tMap.firstKey());
