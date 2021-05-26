@@ -23,26 +23,18 @@ public class TopNDriver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
 
         Configuration conf = getConf();
-
-        args = new GenericOptionsParser(conf, args).getRemainingArgs();
         conf.setInt("N", Integer.parseInt(args[2]));
 
-        Path inputPath = new Path(args[0]),
-                outputPath = new Path(args[1]);
-        FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
+        args = new GenericOptionsParser(conf, args).getRemainingArgs();
 
+        Path inputPath = new Path(args[0]), outputPath = new Path(args[1]);
+        FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
         fs.delete(outputPath, true);
 
         Job job = Job.getInstance(conf, "TopN");
-
         job.setJarByClass(TopNDriver.class);
-
         job.setMapperClass(TopNMapper.class);
         job.setReducerClass(TopNReducer.class);
-
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
-
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
 
