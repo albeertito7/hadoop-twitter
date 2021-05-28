@@ -3,6 +3,7 @@ package cleanUp;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -64,7 +65,7 @@ public class CleanUpDriver extends Configured implements Tool {
                 new Configuration(false));
 
         ChainMapper.addMapper(job, LowerCaseMapper.class,
-                LongWritable.class, Text.class, Text.class, Text.class,
+                LongWritable.class, Text.class, NullWritable.class, Text.class,
                 new Configuration(false));
     }
 
