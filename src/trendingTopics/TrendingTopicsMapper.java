@@ -27,7 +27,8 @@ public class TrendingTopicsMapper extends Mapper<LongWritable, Text, Text, IntWr
         }
     }*/
 
-    protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+
         try {
             JSONObject json = new JSONObject(value.toString());
             JSONArray values = json.getJSONArray("hashtags");
