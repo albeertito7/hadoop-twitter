@@ -56,6 +56,8 @@ public class TrendingTopicsDriver  {
         /*SequenceFileOutputFormat.setCompressOutput(job1, true);
         SequenceFileOutputFormat.setOutputCompressorClass(job1, DefaultCodec.class);
         SequenceFileOutputFormat.setOutputCompressionType(job1, SequenceFile.CompressionType.BLOCK);*/
+
+        FileInputFormat.setInputDirRecursive(job1, true);
         FileInputFormat.addInputPath(job1, inputPath);
         FileOutputFormat.setOutputPath(job1, cleanUpOutputPath);
         ControlledJob controlledJob1 = new ControlledJob(conf);
@@ -75,7 +77,7 @@ public class TrendingTopicsDriver  {
         ControlledJob controlledJob2 = new ControlledJob(conf);
         controlledJob2.setJob(job2);
 
-        /*Job job3 = Job.getInstance(conf, "TopN");
+        Job job3 = Job.getInstance(conf, "TopN");
         job3.setJarByClass(TopNDriver.class);
         job3.setMapperClass(TopNMapper.class);
         job3.setReducerClass(TopNReducer.class);
@@ -84,13 +86,13 @@ public class TrendingTopicsDriver  {
         FileInputFormat.addInputPath(job3, trendingTopicOutputPath);
         FileOutputFormat.setOutputPath(job3, topNOutputPath);
         ControlledJob controlledJob3 = new ControlledJob(conf);
-        controlledJob3.setJob(job3);*/
+        controlledJob3.setJob(job3);
 
         jobControl.addJob(controlledJob1);
         jobControl.addJob(controlledJob2);
-        //jobControl.addJob(controlledJob3);
+        jobControl.addJob(controlledJob3);
         controlledJob2.addDependingJob(controlledJob1);
-        //controlledJob3.addDependingJob(controlledJob2);
+        controlledJob3.addDependingJob(controlledJob2);
 
         Thread thread = new Thread(jobControl);
         thread.start();
