@@ -13,13 +13,12 @@ public class LowerCaseMapper extends Mapper<LongWritable, Text, NullWritable, Te
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        // change tweets letter case to either lower-case
 
         try {
             JSONObject json = new JSONObject(value.toString());
 
             if (json.has("text")) { // maybe this it's not necessary cuz of EmptyFieldsMapper
-                json.put("text", json.getString("text").toLowerCase());
+                json.put("text", json.getString("text").toLowerCase()); // change tweets letter case to either lower-case
             }
 
             context.write(NullWritable.get(), new Text(json.toString()));
