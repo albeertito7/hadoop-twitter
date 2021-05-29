@@ -2,6 +2,7 @@ package topN;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -9,9 +10,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TopNReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
+public class TopNReducer extends Reducer<NullWritable, Text, NullWritable, Text> {
 
-    private TreeMap<Integer, String> tMap;
+    private TreeMap<Integer, Text> tMap;
     private static int N;
 
     @Override
@@ -21,15 +22,12 @@ public class TopNReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
         N = conf.getInt("N", 5);
     }
 
-    @Override
     public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
-        String name = key.toString();
-        int count = 0;
-
-        for (Text val : values)
+        for(Text val: values)
         {
-            tMap.put(Integer.parseInt(key.toString()), val.toString());
+            String[] tokens = val.toString().split("\t");
+            tMap.put(Integer.parseInt(tokens[0]), new Text(tokens[0] + "\t" + tokens[1]));
         }
 
         if (tMap.size() > N) {
@@ -40,11 +38,9 @@ public class TopNReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
     @Override
     public void cleanup (Context context) throws IOException, InterruptedException
     {
-        for (Map.Entry<Integer, String> entry : tMap.entrySet())
+        for (Map.Entry<Integer, Text> entry : tMap.entrySet())
         {
-            int count = entry.getKey();
-            String name = entry.getValue();
-            context.write(new IntWritable(count), new Text(name));
+            context.write(NullWritable.get(), new Text(entry.getValue()));
         }
     }
 }
