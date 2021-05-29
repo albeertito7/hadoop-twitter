@@ -2,7 +2,6 @@ package topN;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
