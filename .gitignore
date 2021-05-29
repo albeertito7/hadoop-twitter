@@ -8,6 +8,7 @@
 /input/
 /output/
 /tweets/
+/data/
 
 # Compiled class file
 *.class
