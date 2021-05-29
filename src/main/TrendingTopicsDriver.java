@@ -42,9 +42,9 @@ public class TrendingTopicsDriver  {
         JobControl jobControl = new JobControl("Trending Topics");
 
         Path inputPath = new Path(args[0]), outputPath = new Path(args[1]),
-                trendingTopicOutputPath = new Path(outputPath + "/trendingtopic"),
-                cleanUpOutputPath = new Path(outputPath + "/cleanup"),
-                topNOutputPath = new Path(outputPath + "/topn");
+                trendingTopicOutputPath = new Path(outputPath + "/trendingTopics"),
+                cleanUpOutputPath = new Path(outputPath + "/cleanUp"),
+                topNOutputPath = new Path(outputPath + "/topN");
         FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
         fs.delete(outputPath, true);
 
@@ -56,7 +56,6 @@ public class TrendingTopicsDriver  {
         /*SequenceFileOutputFormat.setCompressOutput(job1, true);
         SequenceFileOutputFormat.setOutputCompressorClass(job1, DefaultCodec.class);
         SequenceFileOutputFormat.setOutputCompressionType(job1, SequenceFile.CompressionType.BLOCK);*/
-
         FileInputFormat.setInputDirRecursive(job1, true);
         FileInputFormat.addInputPath(job1, inputPath);
         FileOutputFormat.setOutputPath(job1, cleanUpOutputPath);
@@ -81,7 +80,7 @@ public class TrendingTopicsDriver  {
         job3.setJarByClass(TopNDriver.class);
         job3.setMapperClass(TopNMapper.class);
         job3.setReducerClass(TopNReducer.class);
-        job3.setOutputKeyClass(IntWritable.class);
+        job3.setOutputKeyClass(NullWritable.class);
         job3.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job3, trendingTopicOutputPath);
         FileOutputFormat.setOutputPath(job3, topNOutputPath);
