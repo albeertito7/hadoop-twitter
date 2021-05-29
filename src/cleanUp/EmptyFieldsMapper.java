@@ -9,7 +9,7 @@ import org.mortbay.log.Log;
 
 import java.io.IOException;
 
-public class EmptyFieldsMapper extends Mapper<LongWritable, Text, Object, Text> {
+public class EmptyFieldsMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
