@@ -1,7 +1,6 @@
 package topN;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -9,18 +8,17 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class TopNMapper extends Mapper<LongWritable, Text, IntWritable, Text> { // NullWritable
+public class TopNMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
 
-    private TreeMap<String, Integer> tMap; // to sort the top N hashtags
+    private TreeMap<Integer, String> tMap; // to sort the top N hashtags
     private static int N_2;
 
     @Override
     public void setup(Context context) throws IOException, InterruptedException {
         tMap = new TreeMap<>();
         Configuration conf = context.getConfiguration();
-        N_2 = 2*conf.getInt("N", 5);
+        N_2 = conf.getInt("N", 5) * 2;
     }
 
     // To get a better approximation to the Top-N hastags, it is recommendable that the mapper
@@ -29,7 +27,7 @@ public class TopNMapper extends Mapper<LongWritable, Text, IntWritable, Text> { 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
         String[] tokens = value.toString().split("\t");
-        tMap.put(tokens[1], Integer.parseInt(tokens[0])); // <hashtag, count>
+        tMap.put(Integer.parseInt(tokens[0]), tokens[1]); // <count, hashtag>
 
         if (tMap.size() > N_2) {
             tMap.remove(tMap.firstKey());
@@ -39,10 +37,9 @@ public class TopNMapper extends Mapper<LongWritable, Text, IntWritable, Text> { 
     @Override
     protected void cleanup(Context context) throws IOException, InterruptedException {
 
-        for (Map.Entry<String, Integer> entry : tMap.entrySet())
+        for (Map.Entry<Integer, String> entry : tMap.entrySet())
         {
-            int count = entry.getValue();
-            context.write(new IntWritable(count), new Text(entry.getKey()));
+            context.write(NullWritable.get(), new Text(Integer.parseInt(entry.getKey().toString())+ "\t" + entry.getValue()));
         }
     }
 }
