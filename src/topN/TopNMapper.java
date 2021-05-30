@@ -27,7 +27,7 @@ public class TopNMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
         String[] tokens = value.toString().split("\t");
-        tMap.put(Integer.parseInt(tokens[0]), tokens[1]); // <count, hashtag>
+        tMap.put(Integer.parseInt(tokens[1]), tokens[0]); // <count, hashtag>
 
         if (tMap.size() > N_2) {
             tMap.remove(tMap.firstKey());
