@@ -20,12 +20,13 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import topN.TopNDriver;
 import topN.TopNMapper;
 import topN.TopNReducer;
-import trendingTopics.TrendingTopicsMapper;
+import trendingTopics.TrendingTopicsJSONMapper;
 import trendingTopics.TrendingTopicsReducer;
 
 import java.net.URI;
 
 import static cleanUp.CleanUpDriver.cleanUp;
+import static main.TimeHelper.getTIME;
 
 public class TrendingTopicsDriver  {
 
@@ -53,9 +54,9 @@ public class TrendingTopicsDriver  {
         cleanUp(job1);
         job1.setOutputKeyClass(NullWritable.class);
         job1.setOutputValueClass(Text.class);
-        /*SequenceFileOutputFormat.setCompressOutput(job1, true);
+        SequenceFileOutputFormat.setCompressOutput(job1, true);
         SequenceFileOutputFormat.setOutputCompressorClass(job1, DefaultCodec.class);
-        SequenceFileOutputFormat.setOutputCompressionType(job1, SequenceFile.CompressionType.BLOCK);*/
+        SequenceFileOutputFormat.setOutputCompressionType(job1, SequenceFile.CompressionType.BLOCK);
         FileInputFormat.setInputDirRecursive(job1, true);
         FileInputFormat.addInputPath(job1, inputPath);
         FileOutputFormat.setOutputPath(job1, cleanUpOutputPath);
@@ -64,13 +65,14 @@ public class TrendingTopicsDriver  {
 
         Job job2 = Job.getInstance(conf, "Trending Topics");
         job2.setJarByClass(TrendingTopicsDriver.class);
-        job2.setMapperClass(TrendingTopicsMapper.class);
+        job2.setMapperClass(TrendingTopicsJSONMapper.class);
+        job2.setCombinerClass(TrendingTopicsReducer.class);
         job2.setReducerClass(TrendingTopicsReducer.class);
         job2.setOutputKeyClass(Text.class);
         job2.setOutputValueClass(IntWritable.class);
-        /*SequenceFileOutputFormat.setCompressOutput(job2, true);
+        SequenceFileOutputFormat.setCompressOutput(job2, true);
         SequenceFileOutputFormat.setOutputCompressorClass(job2, DefaultCodec.class);
-        SequenceFileOutputFormat.setOutputCompressionType(job2, SequenceFile.CompressionType.BLOCK);*/
+        SequenceFileOutputFormat.setOutputCompressionType(job2, SequenceFile.CompressionType.BLOCK);
         FileInputFormat.addInputPath(job2, cleanUpOutputPath);
         FileOutputFormat.setOutputPath(job2, trendingTopicOutputPath);
         ControlledJob controlledJob2 = new ControlledJob(conf);
@@ -79,6 +81,7 @@ public class TrendingTopicsDriver  {
         Job job3 = Job.getInstance(conf, "TopN");
         job3.setJarByClass(TopNDriver.class);
         job3.setMapperClass(TopNMapper.class);
+        job3.setCombinerClass(TopNReducer.class);
         job3.setReducerClass(TopNReducer.class);
         job3.setOutputKeyClass(NullWritable.class);
         job3.setOutputValueClass(Text.class);
@@ -90,9 +93,11 @@ public class TrendingTopicsDriver  {
         jobControl.addJob(controlledJob1);
         jobControl.addJob(controlledJob2);
         jobControl.addJob(controlledJob3);
-        controlledJob2.addDependingJob(controlledJob1);
+
+        controlledJob2.addDependingJob(controlledJob1); // job dependencies
         controlledJob3.addDependingJob(controlledJob2);
 
+        long timeStart = System.currentTimeMillis();
         Thread thread = new Thread(jobControl);
         thread.start();
 
@@ -100,6 +105,8 @@ public class TrendingTopicsDriver  {
             if(jobControl.allFinished()){
                 System.out.println(jobControl.getSuccessfulJobList());
                 jobControl.stop();
+                System.out.println("All jobs finished successfully.");
+                System.out.println("Elapsed time: " + getTIME(System.currentTimeMillis() - timeStart) + "s");
                 break;
             }
         }
