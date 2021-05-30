@@ -33,6 +33,7 @@ public class TrendingTopicsDriver extends Configured implements Tool {
 
         job.setJarByClass(TrendingTopicsDriver.class);
         job.setMapperClass(TrendingTopicsMapper.class);
+        job.setCombinerClass(TrendingTopicsReducer.class);
         job.setReducerClass(TrendingTopicsReducer.class);
 
         /* As the mapper and reducer out types differ... */
