@@ -6,7 +6,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
-public class TrendingTopicsReducer extends Reducer<Text, IntWritable, IntWritable, Text> {
+public class TrendingTopicsReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
 
     @Override
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException
@@ -17,6 +17,6 @@ public class TrendingTopicsReducer extends Reducer<Text, IntWritable, IntWritabl
             count += val.get();
         }
 
-        context.write(new IntWritable(count), new Text(key.toString()));
+        context.write(new Text(key.toString()), new IntWritable(count));
     }
 }
