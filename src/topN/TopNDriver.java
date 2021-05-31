@@ -16,6 +16,8 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 import java.net.URI;
 
+import static main.TimeHelper.getTIME;
+
 public class TopNDriver extends Configured implements Tool {
 
     @Override
@@ -31,7 +33,7 @@ public class TopNDriver extends Configured implements Tool {
         fs.delete(outputPath, true);
 
         Job job = Job.getInstance(conf, "TopN");
-        job.setJarByClass(TopNDriver.class);
+        job.setJarByClass(this.getClass());
         job.setMapperClass(TopNMapper.class);
         job.setReducerClass(TopNReducer.class);
         job.setOutputKeyClass(IntWritable.class);
@@ -40,7 +42,12 @@ public class TopNDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
 
-        return (job.waitForCompletion(true) ? 0 : 1);
+        long timeStart = System.currentTimeMillis();
+        if(job.waitForCompletion(true)) {
+            System.out.println("Elapsed time: " + getTIME(System.currentTimeMillis() - timeStart));
+            return 0;
+        }
+        return 1;
     }
 
     public static void main(String[] args) throws Exception {
