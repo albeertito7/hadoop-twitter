@@ -8,16 +8,16 @@ import org.apache.hadoop.io.Writable;
 
 public class SentimentWritable implements Writable {
     private final IntWritable ratio;
-    private final IntWritable length;
+    private final IntWritable tweetLength;
 
     public SentimentWritable() {
         this.ratio = new IntWritable(0);
-        this.length = new IntWritable(0);
+        this.tweetLength = new IntWritable(0);
     }
 
     public SentimentWritable(IntWritable ratio, IntWritable len) {
         this.ratio = ratio;
-        this.length = len;
+        this.tweetLength = len;
     }
 
     public IntWritable getRatio() {
@@ -25,16 +25,16 @@ public class SentimentWritable implements Writable {
     }
 
     public IntWritable getLength() {
-        return this.length;
+        return this.tweetLength;
     }
 
     public void write(DataOutput dataOutput) throws IOException {
-        this.length.write(dataOutput);
+        this.tweetLength.write(dataOutput);
         this.ratio.write(dataOutput);
     }
 
     public void readFields(DataInput dataInput) throws IOException {
-        this.length.readFields(dataInput);
+        this.tweetLength.readFields(dataInput);
         this.ratio.readFields(dataInput);
     }
 }
