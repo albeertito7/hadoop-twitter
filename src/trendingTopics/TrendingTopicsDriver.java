@@ -16,6 +16,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.net.URI;
 
+import static main.TimeHelper.getTIME;
+
 public class TrendingTopicsDriver extends Configured implements Tool {
 
     @Override
@@ -31,7 +33,7 @@ public class TrendingTopicsDriver extends Configured implements Tool {
 
         Job job = Job.getInstance(conf, "Trending Topics");
 
-        job.setJarByClass(TrendingTopicsDriver.class);
+        job.setJarByClass(this.getClass());
         job.setMapperClass(TrendingTopicsMapper.class);
         job.setCombinerClass(TrendingTopicsReducer.class);
         job.setReducerClass(TrendingTopicsReducer.class);
@@ -45,7 +47,12 @@ public class TrendingTopicsDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(job, inputPath); // The input can be can be a file, directory or a file pattern
         FileOutputFormat.setOutputPath(job, outputPath); // The output directory must not exist
 
-        return (job.waitForCompletion(true) ? 0 : 1); // Submit mapreduce job and wait for completion
+        long timeStart = System.currentTimeMillis();
+        if(job.waitForCompletion(true)) {
+            System.out.println("Elapsed time: " + getTIME(System.currentTimeMillis() - timeStart));
+            return 0;
+        }
+        return 1;
     }
 
     public static void main(String[] args) throws Exception {
