@@ -17,9 +17,12 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import sentimentAnalysis.SentimentMapper;
 import trendingTopics.TrendingTopicsDriver;
 
 import java.net.URI;
+
+import static main.TimeHelper.getTIME;
 
 public class CleanUpDriver extends Configured implements Tool {
 
@@ -38,7 +41,7 @@ public class CleanUpDriver extends Configured implements Tool {
         fs.delete(outputPath, true);
 
         Job job = Job.getInstance(conf, "Clean Up");
-        job.setJarByClass(TrendingTopicsDriver.class);
+        job.setJarByClass(this.getClass());
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
@@ -47,7 +50,12 @@ public class CleanUpDriver extends Configured implements Tool {
 
         cleanUp(job);
 
-        return (job.waitForCompletion(true) ? 0 : 1);
+        long timeStart = System.currentTimeMillis();
+        if(job.waitForCompletion(true)) {
+            System.out.println("Elapsed time: " + getTIME(System.currentTimeMillis() - timeStart));
+            return 0;
+        }
+        return 1;
     }
 
     public static void cleanUp(Job job) throws java.io.IOException {
