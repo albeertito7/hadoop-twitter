@@ -1,25 +1,30 @@
 package sentimentAnalysis;
 
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class SentimentReducer extends Reducer<Text, SentimentWritable, Text, Text> {
+public class SentimentReducer extends Reducer<Text, SentimentWritable, NullWritable, Text> {
 
     @Override
     protected void reduce(Text key, Iterable<SentimentWritable> values, Context context) throws IOException, InterruptedException {
-        SentimentWritable sentiment;
         float ratio = 0.0f;
 
         for (SentimentWritable value: values) {
-            ratio += (float)value.getRatio().get() / (float) value.getLength().get();
+            ratio += value.getRatio().get() / value.getLength().get();
         }
 
-        if (ratio != 0.0f) {
-            ratio = Math.abs(ratio) * 100f;
-            context.write(key, new Text(ratio + "% " + (ratio < 0.0F ? "negative" : "positive")));
+        if (ratio != 0.0f && ratio != -0.0f) {
+            BigDecimal bd = new BigDecimal(Math.abs(ratio) * 100f).setScale(2, RoundingMode.HALF_UP);
+            ratio = bd.floatValue();
+            context.write(NullWritable.get(), new Text(key + ";" + ratio + "%;" + (ratio < 0.0f ? "negative" : "positive")));
         }
     }
 }
