@@ -2,12 +2,10 @@ package sentimentAnalysis;
 
 import java.net.URI;
 
-import cleanUp.LanguageMapper;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -22,7 +20,7 @@ import org.apache.hadoop.util.ToolRunner;
 import static cleanUp.CleanUpDriver.cleanUp;
 import static main.TimeHelper.getTIME;
 
-public class SentimentAnalysis extends Configured implements Tool {
+public class SentimentAnalysisDriver extends Configured implements Tool {
 
     private static final String language = "es";
 
@@ -50,7 +48,7 @@ public class SentimentAnalysis extends Configured implements Tool {
                 new Configuration(false));
 
         ChainReducer.setReducer(job, SentimentReducer.class,
-                Text.class, SentimentWritable.class, Text.class, Text.class,
+                Text.class, SentimentWritable.class, NullWritable.class, Text.class,
                 new Configuration(false));
 
         FileInputFormat.addInputPath(job, inputPath);
@@ -66,7 +64,7 @@ public class SentimentAnalysis extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new SentimentAnalysis(), args);
+        int exitCode = ToolRunner.run(new SentimentAnalysisDriver(), args);
         System.exit(exitCode);
     }
 }
