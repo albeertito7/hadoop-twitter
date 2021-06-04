@@ -28,7 +28,8 @@ public class TopNDriver extends Configured implements Tool {
 
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        Path inputPath = new Path(args[0]), outputPath = new Path(args[1]);
+        Path inputPath = new Path(args[0]),
+                outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new URI(outputPath.toString()), conf);
         fs.delete(outputPath, true);
 
@@ -50,6 +51,12 @@ public class TopNDriver extends Configured implements Tool {
         return 1;
     }
 
+    /**
+     * arg[0] = TrendingTopics .txt <key, value> file, containing the topics count
+     * arg[1] = output directory
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new TopNDriver(), args);
         System.exit(exitCode);

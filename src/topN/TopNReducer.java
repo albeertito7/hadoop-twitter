@@ -1,5 +1,6 @@
 package topN;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -16,27 +17,28 @@ public class TopNReducer extends Reducer<NullWritable, Text, NullWritable, Text>
     private static int N;
 
     @Override
-    public void setup (Context context) throws IOException, InterruptedException {
+    protected void setup (Context context) throws IOException, InterruptedException {
         tMap = new TreeMap<>();
         Configuration conf = context.getConfiguration();
         N = conf.getInt("N", 5);
     }
 
-    public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+    @Override
+    protected void reduce(NullWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
         for(Text val: values)
         {
             String[] tokens = val.toString().split("\t");
             tMap.put(Integer.parseInt(tokens[0]), new Text(tokens[0] + "\t" + tokens[1]));
-        }
 
-        if (tMap.size() > N) {
-            tMap.remove(tMap.firstKey());
+            if (tMap.size() > N) {
+                tMap.remove(tMap.firstKey());
+            }
         }
     }
 
     @Override
-    public void cleanup (Context context) throws IOException, InterruptedException
+    protected void cleanup (Context context) throws IOException, InterruptedException
     {
         for (Map.Entry<Integer, Text> entry : tMap.entrySet())
         {
