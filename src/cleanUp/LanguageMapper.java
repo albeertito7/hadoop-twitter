@@ -6,7 +6,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.mortbay.log.Log;
 
 import java.io.IOException;
 
@@ -34,7 +33,7 @@ public class LanguageMapper extends Mapper<LongWritable, Text, LongWritable, Tex
             context.write(key, new Text(json.toString()));
         }
         catch (JSONException e) {
-            Log.info("JSONException LanguageMapper", e.toString());
+            e.printStackTrace();
         }
     }
 }

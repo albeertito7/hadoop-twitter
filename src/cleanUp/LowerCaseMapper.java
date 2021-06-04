@@ -17,7 +17,7 @@ public class LowerCaseMapper extends Mapper<LongWritable, Text, NullWritable, Te
         try {
             JSONObject json = new JSONObject(value.toString());
 
-            if (json.has("text")) { // maybe this it's not necessary cuz of EmptyFieldsMapper
+            if (json.has("text")) { // maybe this it's not necessary because of EmptyFieldsMapper
                 json.put("text", json.getString("text").toLowerCase()); // change tweets letter case to either lower-case
             }
 
