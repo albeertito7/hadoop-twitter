@@ -39,7 +39,6 @@ public class SentimentAnalysisDriver extends Configured implements Tool {
         Job job = Job.getInstance(conf, "Sentiment Analysis");
         job.addCacheFile(new URI(positivePath.toString()));
         job.addCacheFile(new URI(negativePath.toString()));
-        //job.setCombinerClass(SentimentReducer.class);
 
         cleanUp(job);
 
@@ -63,6 +62,14 @@ public class SentimentAnalysisDriver extends Configured implements Tool {
         return 1;
     }
 
+    /**
+     * arg[0] = input directory or file (.json format)
+     * arg[1] = output directory
+     * arg[2] = input directory or file of positive words (.txt format, one word each line)
+     * arg[3] = input directory or file of negative words (.txt format, one word each line)
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new SentimentAnalysisDriver(), args);
         System.exit(exitCode);
