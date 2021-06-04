@@ -54,6 +54,7 @@ public class TopNDriver extends Configured implements Tool {
     /**
      * arg[0] = TrendingTopics .txt <key, value> file, containing the topics count
      * arg[1] = output directory
+     * arg[2] = number of top trending topics (N)
      * @param args
      * @throws Exception
      */
