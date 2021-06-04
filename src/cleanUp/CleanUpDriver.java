@@ -76,6 +76,12 @@ public class CleanUpDriver extends Configured implements Tool {
                 new Configuration(false));
     }
 
+    /**
+     * arg[0] = input directory or file (format .json)
+     * arg[1] = output directory
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new CleanUpDriver(), args);
         System.exit(exitCode);
