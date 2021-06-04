@@ -56,7 +56,7 @@ public class TrendingTopicsDriver extends Configured implements Tool {
     }
 
     /***
-     * arg[0] = input .txt file
+     * arg[0] = input directory or file (.txt format)
      * arg[1] = output directory
      * @param args
      * @throws Exception
