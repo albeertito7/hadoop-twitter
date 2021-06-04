@@ -90,7 +90,7 @@ public class TrendingTopicsDriver  {
         ControlledJob controlledJob3 = new ControlledJob(conf);
         controlledJob3.setJob(job3);
 
-        jobControl.addJob(controlledJob1);
+        jobControl.addJob(controlledJob1); // adding controlled jobs
         jobControl.addJob(controlledJob2);
         jobControl.addJob(controlledJob3);
 
