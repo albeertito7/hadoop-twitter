@@ -38,7 +38,7 @@ public class TrendingTopicsDriver extends Configured implements Tool {
         job.setCombinerClass(TrendingTopicsReducer.class);
         job.setReducerClass(TrendingTopicsReducer.class);
 
-        /* As the mapper and reducer out types differ... */
+        // As the mapper and reducer out types differ
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(IntWritable.class);
@@ -55,6 +55,12 @@ public class TrendingTopicsDriver extends Configured implements Tool {
         return 1;
     }
 
+    /***
+     * arg[0] = input .txt file
+     * arg[1] = output directory
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new TrendingTopicsDriver(), args);
         System.exit(exitCode);
