@@ -1,6 +1,6 @@
 # hadoop-twitter
 
-MapReduce application to calculate the trending topics on twitter and feelings associated with such hashtags
+MapReduce application to calculate the trending topics on twitter and feelings associated with such hashtags.
 
 All coding is done in Java using the MapReduce framework, and the solution is structured by packages as follows
 | Package 	| Description	|
