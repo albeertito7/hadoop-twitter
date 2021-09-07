@@ -13,4 +13,11 @@ All coding is done in Java using the MapReduce framework, and the solution is st
 
 >Note: The mapreduce appointment will work with twitter data in text and json format
 
+IntelliJ IDEA was used as IDE to develop the application, thus, in the file "hadoop-twitter.iml" you will find the following hadoop project dependencies:
+  - hadoop-common
+  - hadoop-mapreduce-client-jobclient
+  - hadoopo-mapreduce-client-core
+
+which use the version 2.7.3
+
 <img src="assets/hadoop-logo.png" width="580" />
