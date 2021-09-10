@@ -20,4 +20,6 @@ IntelliJ IDEA was used as IDE to develop the application, thus, in the file "had
 
 which use the version 2.7.3
 
+>Note: If using Windows check how to install hadoop correctly at [link](https://gist.github.com/albeertito7/25a241972c469390f120fe353496874a).
+
 <img src="assets/hadoop-logo.png" width="580" />
