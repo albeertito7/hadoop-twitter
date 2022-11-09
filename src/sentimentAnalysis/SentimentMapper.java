@@ -74,6 +74,5 @@ public class SentimentMapper extends Mapper<NullWritable, Text, Text, SentimentW
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }

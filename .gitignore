@@ -9,6 +9,7 @@
 /output/
 /tweets/
 /data/
+tweets.zip
 
 # Compiled class file
 *.class

@@ -14,6 +14,7 @@ public class TrendingTopicsJSONMapper extends Mapper<LongWritable, Text, Text, I
 
     private final static IntWritable one = new IntWritable(1);
 
+    @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
         try {

@@ -16,7 +16,7 @@ public class TopNReducer extends Reducer<NullWritable, Text, NullWritable, Text>
     private static int N;
 
     @Override
-    public void setup (Context context) throws IOException, InterruptedException {
+    protected void setup (Context context) throws IOException, InterruptedException {
         tMap = new TreeMap<>();
         Configuration conf = context.getConfiguration();
         N = conf.getInt("N", 5);
@@ -36,7 +36,7 @@ public class TopNReducer extends Reducer<NullWritable, Text, NullWritable, Text>
     }
 
     @Override
-    public void cleanup (Context context) throws IOException, InterruptedException
+    protected void cleanup (Context context) throws IOException, InterruptedException
     {
         for (Map.Entry<Integer, Text> entry : tMap.entrySet())
         {
